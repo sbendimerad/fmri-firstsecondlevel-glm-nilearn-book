@@ -1,4 +1,4 @@
-## 📘 fMRI First- and Second-Level GLM with Nilearn
+## 📘 Introduction to fMRI Data Analysis with Nilearn
 
 This repository contains **Jupyter Book–style tutorials** on **statistical modeling of fMRI data** using the [`nilearn`](https://nilearn.github.io/) library.
 The tutorials introduce the fundamentals of **General Linear Models (GLMs)** for fMRI, covering both **first-level (subject-level) analysis** and **second-level (group-level) inference**.
