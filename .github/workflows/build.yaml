@@ -39,10 +39,11 @@ jobs:
           python -m venv venv
           source venv/bin/activate
 
-          # Always ensure Jupyter Book exists (even if requirements.txt forgot it)
           python -m pip install --upgrade pip --quiet
           python -m pip install ipykernel --quiet
-          python -m pip install jupyter-book --quiet
+
+          # IMPORTANT: classic Jupyter Book (Sphinx). Avoid MyST 'jupyter-book' v2 CLI.
+          python -m pip install "jupyter-book<2" --quiet
 
           # Project requirements (nilearn/nibabel/etc.)
           python -m pip install -r requirements.txt --quiet
