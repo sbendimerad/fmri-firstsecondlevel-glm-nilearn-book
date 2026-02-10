@@ -1,7 +1,7 @@
 # Book settings
 # Learn more at https://jupyterbook.org/customize/config.html
 
-title: Multifractal Analysis
+title: fMRI Data Analysis with nilearn
 author: Sabrine Bendimerad
 logo: MRI-ACQ-RECON-LOGO.png
 
@@ -22,7 +22,7 @@ bibtex_bibfiles:
 
 # Information about where the book exists on the web
 repository:
-  url: https://github.com/sbendimerad/pymultifracs-book.git # Online location of your book
+  url: https://github.com/sbendimerad/fmri-firstsecondlevel-glm-nilearn-book.git # Online location of your book
   path_to_book: src  # Optional path to your book, relative to the repository root
   branch: main  # Which branch of the repository should be used when creating links (optional)
 # Add GitHub buttons to your book

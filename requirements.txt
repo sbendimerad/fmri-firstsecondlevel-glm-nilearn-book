@@ -1,9 +1,8 @@
-jupyter-book
-jupyter
 numpy
 pandas
 matplotlib
-seaborn
-pyWavelets
-scipy 
-pooch    
+nibabel
+nilearn
+scipy
+awscli
+scikit-learn

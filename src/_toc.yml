@@ -4,6 +4,4 @@
 format: jb-book
 root: intro
 chapters:
-  - file: 01_multifractal_analysis.ipynb 
-  - file: 02_outlier_detection.ipynb 
-  - file: 03_bivariate_analysis.ipynb
+  - file: 01_fmri_analysis.ipynb 
