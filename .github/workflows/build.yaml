@@ -9,10 +9,17 @@ permissions:
   id-token: write
   pages: write
 
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
 jobs:
   build-book:
     name: Build Jupyter-book
     runs-on: ubuntu-latest 
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
 
     steps:
       - name: Checkout code
@@ -43,6 +50,9 @@ jobs:
           source venv/bin/activate
           python -m ipykernel install --user --name=venv
           jupyter-book build src
+      
+      - name: Disable Jekyll on Pages
+        run: touch src/_build/html/.nojekyll
 
       - name: Upload artifacts
         uses: actions/upload-pages-artifact@v3
