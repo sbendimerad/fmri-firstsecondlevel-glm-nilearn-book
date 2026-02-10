@@ -1,4 +1,4 @@
-# Build and publish the book online
+# Build and publish the Jupyter Book to GitHub Pages
 
 name: build
 
@@ -38,11 +38,14 @@ jobs:
           python -m pip install --upgrade pip --quiet
           python -m venv venv
           source venv/bin/activate
+
+          # Always ensure Jupyter Book exists (even if requirements.txt forgot it)
           python -m pip install --upgrade pip --quiet
           python -m pip install ipykernel --quiet
           python -m pip install jupyter-book --quiet
-          python -m pip install -r requirements.txt --quiet
 
+          # Project requirements (nilearn/nibabel/etc.)
+          python -m pip install -r requirements.txt --quiet
 
       - name: Cache executed notebooks
         uses: actions/cache@v4
@@ -50,14 +53,29 @@ jobs:
           path: src/_build/.jupyter_cache
           key: jupyter-book-cache-${{ runner.os }}-${{ hashFiles('requirements.txt') }}
 
+      - name: Sanity check book sources
+        run: |
+          ls -la src
+          test -f src/_config.yml
+          test -f src/_toc.yml
+          test -f src/intro.md
+
       - name: Build the book
         run: |
           source venv/bin/activate
           python -m ipykernel install --user --name=venv
-          jupyter-book build src
 
-      - name: Disable Jekyll on Pages
-        run: touch src/_build/html/.nojekyll
+          # Build
+          python -m jupyter_book build src
+
+          # Show outputs (useful for debugging)
+          echo "=== src/_build ==="
+          ls -la src/_build || true
+          echo "=== src/_build/html ==="
+          ls -la src/_build/html || true
+
+          # Ensure Pages won't try to run Jekyll on built output
+          touch src/_build/html/.nojekyll
 
       - name: Upload artifacts
         uses: actions/upload-pages-artifact@v3
@@ -99,5 +117,6 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git checkout -B "colab"
-          git commit -am "Adapt notebook to colab" || echo "No changes to commit"
+          git add -A
+          git commit -m "Adapt notebook to colab" || echo "No changes to commit"
           git push --force origin colab
