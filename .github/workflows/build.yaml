@@ -1,9 +1,11 @@
 # Build and publish the book online
 
 name: build
+
 on:
   push:
     branches: ["main"]
+
 permissions:
   contents: read
   id-token: write
@@ -16,7 +18,7 @@ concurrency:
 jobs:
   build-book:
     name: Build Jupyter-book
-    runs-on: ubuntu-latest 
+    runs-on: ubuntu-latest
     environment:
       name: github-pages
       url: ${{ steps.deploy.outputs.page_url }}
@@ -26,7 +28,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v3
+        uses: actions/setup-python@v5
         with:
           python-version: "3.11"
           cache: pip
@@ -39,18 +41,18 @@ jobs:
           python -m pip install ipykernel --quiet
           python -m pip install -r requirements.txt --quiet
 
-      - name: cache executed notebooks
-        uses: actions/cache@v3
+      - name: Cache executed notebooks
+        uses: actions/cache@v4
         with:
           path: src/_build/.jupyter_cache
-          key: jupyter-book-cache-${{ hashFiles('requirements.txt') }}
+          key: jupyter-book-cache-${{ runner.os }}-${{ hashFiles('requirements.txt') }}
 
       - name: Build the book
         run: |
           source venv/bin/activate
           python -m ipykernel install --user --name=venv
           jupyter-book build src
-      
+
       - name: Disable Jekyll on Pages
         run: touch src/_build/html/.nojekyll
 
@@ -64,31 +66,35 @@ jobs:
         uses: actions/deploy-pages@v4
 
   update_colab:
-     name: Update notebooks for Colab Compatibility
-     runs-on: ubuntu-latest
-     permissions:                # Job-level permissions configuration starts here
-       contents: write           # 'write' access to repository contents
-       pull-requests: write      # 'write' access to pull requests
-     steps:
+    name: Update notebooks for Colab Compatibility
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v3
+        uses: actions/setup-python@v5
         with:
           python-version: "3.11"
           cache: pip
 
       - name: Install dependencies
         run: |
-          python -m pip install nbformat
+          python -m pip install --upgrade pip --quiet
+          python -m pip install nbformat --quiet
+
       - name: Run update script
         run: |
           python extra/update_notebook_header.py --inplace
+
       - name: Save results to a new branch
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git checkout -b "colab"
-          git commit -am "Adapt notebook to colab"
+          git checkout -B "colab"
+          git commit -am "Adapt notebook to colab" || echo "No changes to commit"
           git push --force origin colab
