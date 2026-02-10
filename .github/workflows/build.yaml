@@ -38,8 +38,11 @@ jobs:
           python -m pip install --upgrade pip --quiet
           python -m venv venv
           source venv/bin/activate
+          python -m pip install --upgrade pip --quiet
           python -m pip install ipykernel --quiet
+          python -m pip install jupyter-book --quiet
           python -m pip install -r requirements.txt --quiet
+
 
       - name: Cache executed notebooks
         uses: actions/cache@v4
